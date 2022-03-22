@@ -54,3 +54,20 @@
 - Solution?
     - I deleted this cluster and set the parameter by `sudo sysctl net/netfilter/nf_conntrack_max=131072` and then created cluster again and it works :) 
 
+## issue#2
+- What?
+    - K8s namespace stuck in `Terminating` phase when tried to delete it.
+- Summary?
+    - I tried to delete a namespace by `kubectl delete ns <namespace_name>`
+    - It was stuck in `Terminating` phase for long period of time and the `ns` was not getting deleted
+    - then run `kubectl get all -n <namespace_name>` this command to see whether anything was there in that `ns`, but found nothing
+    - after some googling & talking to my colleague pulak it seems he also faced the same issue before
+    - pulak tell me to run the command `kubectl get apiservice`, it shows some of the apiservice's `Availability` were `false` and those were making problem
+    - then deleted those apiservices manually and the `ns` got deleted then :) 
+
+- Solution?
+    - it can be occurred because of various reasons but I'm sharing what helps me here.
+    - run `kubectl get apiservice`, if you see any apiservice's Available is `false` then delete them manually
+    - now your namespace should be deleted fine :) 
+    - reference: [see this doc](https://cert-manager.io/v1.2-docs/installation/uninstall/kubernetes/#namespace-stuck-in-terminating-state)
+    
